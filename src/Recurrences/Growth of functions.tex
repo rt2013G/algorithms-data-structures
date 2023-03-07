@@ -2,14 +2,48 @@
 %! Date = 04/03/2023
 
 % Preamble
-\documentclass[12pt]{article}
+\documentclass[14pt]{article}
 
 % Packages
 \usepackage{amsmath}
-\title{title}
+\usepackage{extsizes}
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{textcomp}
 % Document
+\title{\vspace{-1.0cm}Growth of functions}
+\date{}
+\newgeometry{vmargin={10mm}, hmargin={15mm,20mm}}
 \begin{document}
 \maketitle
-test
-
+\vspace{-2.0cm}
+The order of growth of the running time of an algorithm gives a simple characterization of its efficiency. \newline
+\hspace*{5mm} When the size of the input becomes large enough, multiplicative constants and lower-order terms are
+dominated by the effect of the input size itself, and in such scenarios where only the order of growth of the running
+time matters, we are studying the function asymptotically. \newline
+\hspace*{5mm} We can therefore use asymptotic notations to define the behaviour of the efficiency of algorithms,
+namely the $O$-notation, the $\Omega$-notation and $\Theta$-notation. \newline
+\newline
+% O-notation
+\textbf{$O$-notation} \newline
+For a given function $g(n)$, we denote by $O(g(n))$, the set of functions:\vspace{5mm} \newline
+$O(g(n)) = \{f(n) : \exists \ c, n_0 > 0 \mid cg(n) \geq f(n) \geq 0, \ \forall \ n \geq n_0\}$ \vspace{5mm} \newline
+We use the $O$-notation to give an upper bound on a function, to within a constant factor. \newline \newline
+% Ω-notation
+\textbf{$\Omega$-notation} \newline
+Just as the $O$-notation provides an asymptotic upper bound, the $\Omega$-notation provides an asymptotic lower bound.
+For a given function $g(n)$, we denote by $\Omega(g(n))$ the set of functions: \newline \newline
+$\Omega(g(n)) = \{f(n) : \exists \ c, n_0 > 0 \mid f(n) \geq cg(n) \geq 0, \ \forall \ n \geq n_0\}$ \newline \newline
+Furthermore $f(n) = \Omega(g(n)) \iff g(n) = O(f(n)).$ \newline \newline
+% Θ-notation
+\textbf{$\Theta$-notation} \newline
+For a given function $g(n)$, we denote by $\Theta(g(n))$ the set of functions: \newline \newline
+$\Theta(g(n)) = \{f(n) : \exists \ c_1, c_2, n_0 > 0 \mid c_2 g(n) \geq f(n) \geq c_1 g(n) \geq 0, \ \forall \ n \geq n_0\}$ \newline \newline
+In other words, a function $f(n)$ belongs to the set $\Theta(g(n))$ if there exist positive constants $c_1$ and $c_2$
+such that in can be enclosed between $c_1 g(n)$ and $c_2 g(n)$ for sufficiently large $n$. \newpage
+% Additional notes
+\hspace*{-8mm} \textbf{How to choose between the three notations?} \newline \newline
+$if \displaystyle{\lim_{x \to \infty}} \frac{f(n)}{g(n)} = c \neq 0 \implies f(n) = \Theta(g(n))$ \newline
+$if \displaystyle{\lim_{x \to \infty}} \frac{f(n)}{g(n)} = 0 \implies f(n) = O(g(n))$ \newline
+$if \displaystyle{\lim_{x \to \infty}} \frac{f(n)}{g(n)} = \infty \implies f(n) = \Omega(g(n))$ \newline
 \end{document}
