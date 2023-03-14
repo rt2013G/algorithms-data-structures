@@ -13,8 +13,6 @@
  * a maximum subarray crossing the mid-point runs in Θ(n) time.
  * By case two of the master theorem, this recursion yields the result Θ(n log n);
  */
-// todo brute force approach that runs in Θ(n^2) time
-// todo 4.1-5 exercise that solves the problem in Θ(n) time
 int max(int a, int b);
 int maxOfThree(int a, int b, int c);
 int findCrossingSubarray(int *array, int left, int mid, int right);
