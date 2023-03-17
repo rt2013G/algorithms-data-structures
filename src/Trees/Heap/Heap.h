@@ -14,12 +14,12 @@ public:
     int parent(int index);
     int left(int index);
     int right(int index);
+    int getSize();
     void maxHeapify(int index, int size);
     void buildMaxHeap();
     void insert(T value);
     void printArray();
     void printAsciiTree(int index, const std::string& prefix, bool isLeft);
-    int getSize();
     void heapSort();
     std::vector<T> heap;
 
@@ -44,6 +44,11 @@ int Heap<T>::left(int index) {
 template<class T>
 int Heap<T>::right(int index) {
     return index * 2 + 2;
+}
+
+template<class T>
+int Heap<T>::getSize() {
+    return this->heap.size();
 }
 
 template<class T>
@@ -94,11 +99,6 @@ void Heap<T>::printAsciiTree(int index, const std::string& prefix, bool isLeft) 
     cout << this->heap[index] << std::endl;
     printAsciiTree(left(index), prefix + (isLeft ? "|  " : "    "), true);
     printAsciiTree(right(index), prefix + (isLeft ? "|   " : "    "), false);
-}
-
-template<class T>
-int Heap<T>::getSize() {
-    return this->heap.size();
 }
 
 template<class T>
