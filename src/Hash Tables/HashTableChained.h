@@ -11,7 +11,6 @@ class Node
 {
 public:
     explicit Node(T data);
-    ~Node();
     void insertAfter(Node *node); // Adds "node" after this node
     T getData();
     Node *next;
@@ -25,16 +24,6 @@ Node<T>::Node(T data) {
     this->data = data;
     this->next = nullptr;
     this->prev = nullptr;
-}
-
-template<class T>
-Node<T>::~Node() {
-    Node *head = this;
-    while(head != nullptr) {
-        Node *curr = head;
-        head = head->next;
-        curr = nullptr;
-    }
 }
 
 template<class T>
