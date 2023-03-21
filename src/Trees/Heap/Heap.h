@@ -8,7 +8,8 @@ using std::swap;
 using std::cout;
 
 template <class T>
-class Heap {
+class Heap
+{
 public:
     Heap();
     int parent(int index);
