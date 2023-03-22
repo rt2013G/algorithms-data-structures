@@ -1,4 +1,4 @@
-#include "../Trees/Heap/Heap.h"
+#include "../Data Structures/Trees/Heap/Heap.h"
 /*
  * This file is used as a test for the heap and heapsort implementation in "src/Trees/Heap/Heap.h"
  * For simplicity I added the heapsort code directly into the template file.
