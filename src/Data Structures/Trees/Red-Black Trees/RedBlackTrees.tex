@@ -1,0 +1,56 @@
+%! Author = Raffaele Talente
+%! Date = 08/03/2023
+
+% Preamble
+\documentclass[14pt]{article}
+
+% Packages
+\usepackage{amsmath}
+\usepackage{extsizes}
+\usepackage{geometry}
+\usepackage{titling}
+\usepackage{textcomp}
+\usepackage{natbib}
+% Document
+\title{\vspace{-1.0cm} Red-Black Trees}
+\date{}
+\newgeometry{vmargin={10mm}, hmargin={15mm,20mm}}
+
+% Document
+\begin{document}
+    \maketitle
+    \vspace{-2.0cm}
+Red-Black Trees (\textit{RBT}) are Binary Search Trees \textit({BST}) in which every node contains one additional information: its color,
+which can either be red or black.
+Compared to BSTs, RBTs guarantee that basic dynamic-set operations take at most $O(log_2 \ n)$.
+In a RBT, keys are stored in internal nodes, and leaves as well as the parent of the root are replaced
+by a sentinel node \textbf{NIL}.
+RBTs are BSTs that satisfy the following Red-Black properties:
+\begin{enumerate}
+    \item Each node is either \textit{red} or \textit{black}.
+    \item The root is \textit{black}.
+    \item All leaves (NIL) are \textit{black}.
+    \item If a node is \textit{red}, then both its children are \textit{black}.
+    \item All simple paths from a node to a leaf contain the same number of \textit{black} nodes.
+\end{enumerate}
+The number of nodes on any simple path from a node \textit{x} (excluded) down to a leaf is called
+\textbf{black-height} of x, or \textbf{b-height}, denoted by $bh(x)$. \newline
+The black-height of the tree is the black-height of the root. \newline \newline
+\textbf{LEMMA}: A RBT with $n$ internal nodes has a height at most $2 \ log_2(n + 1)$ \newline \newline
+    \textbf{Proof}: \newline
+We first prove by induction that any subtree with root $x$ has at least $2^{bh(x)} - 1$ internal nodes.
+If the height is 0, then x is a leaf, therefore it has $2^0 - 1 = 0$ internal nodes. \newline
+Any internal node x has 2 children, both of which have a black-height of either $bh(x)$ or $bh(x) - 1$
+depending if its red or black, respectively. \newline
+Therefore, each child has at least $2^{bh(x) - 1} - 1$ internal nodes, thus the subtree rooted at x
+as at least: \newline
+    $((2^{bh(x) - 1} - 1) + (2^{bh(x) - 1} - 1) + 1)$ \textit{(both children + the root itself)} = \newline \newline
+$2^1 \ 2^{bh(x) - 1} - 2 + 1$ = $2^{bh(x) - 1}- 1$. \newline \newline
+According to property \textit{(4)}, at least half of the nodes from the root down to a leaf must be black,
+therefore, the b-height of the root must be at least $2^{\frac{h}{2}} - 1$: \newline
+$n \geq 2^{\frac{h}{2}} - 1$ \newline \newline
+$n + 1 \geq 2^{\frac{h}{2}}$ \newline \newline
+$log_2(n + 1) \geq \frac{h}{2})$ \newline \newline
+\textbf{$h \leq 2 log_2(n + 1)$}
+
+\end{document}
