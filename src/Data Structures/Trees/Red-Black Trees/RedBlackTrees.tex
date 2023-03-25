@@ -14,7 +14,7 @@
 % Document
 \title{\vspace{-1.0cm} Red-Black Trees}
 \date{}
-\newgeometry{vmargin={10mm}, hmargin={15mm,20mm}}
+\newgeometry{vmargin={15mm}, hmargin={15mm,20mm}}
 
 % Document
 \begin{document}
@@ -51,6 +51,19 @@ therefore, the b-height of the root must be at least $2^{\frac{h}{2}} - 1$: \new
 $n \geq 2^{\frac{h}{2}} - 1$ \newline \newline
 $n + 1 \geq 2^{\frac{h}{2}}$ \newline \newline
 $log_2(n + 1) \geq \frac{h}{2})$ \newline \newline
-\textbf{$h \leq 2 log_2(n + 1)$}
+\textbf{$h \leq 2 log_2(n + 1)$} \newline \newline \newline
+Insertion and Deletion in a RBT may lead to violations of the Red-Black properties. \newline
+In order to restore such properties, we need to
+    \begin{enumerate}
+        \item Change the pointer structure of the tree
+        \item Change the color of some nodes
+    \end{enumerate}
+We change the pointer structure through \textit{rotations}, which may either be \textit{left rotations}
+    or \textit{right rotations}. \newline
+In the left rotation of a Node \textit{x}, we assume its right child \textit{y} to be $\neq NIL$, \textit{x} then
+    becomes \textit{y}'s left child, and \textit{y}'s left child becomes \textit{x}'s right child. \newline
+    The \textit{right rotation} is completely symmetric. \newline
+Rotations run in $O(1)$ time, because only pointers are changed by them while other attributes in a node
+    remain the same. \newline
 
 \end{document}

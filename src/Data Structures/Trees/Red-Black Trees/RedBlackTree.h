@@ -41,6 +41,8 @@ public:
     Node<T> *successor(Node<T> *node);
     Node<T> *predecessor(Node<T> *node);
     Node<T> *root;
+    void leftRotate(Node<T> *node);
+    void rightRotate(Node<T> *node);
 private:
     Node<T> *nil;
 
@@ -130,6 +132,56 @@ Node<T> *RedBlackTree<T>::predecessor(Node<T> *node) {
         parent = parent->parent;
     }
     return parent;
+}
+
+template<class T>
+void RedBlackTree<T>::leftRotate(Node<T> *node) {
+    if(node == nullptr || node == this->nil) {
+        return;
+    }
+    Node<T> *exRightChild = node->right;
+    if(exRightChild == nullptr || exRightChild == this->nil) {
+        return;
+    }
+    node->right = exRightChild->left;
+    if(node->right != nullptr && node->right != this->nil) {
+        node->right->parent = node;
+    }
+    exRightChild->parent = node->parent;
+    if(exRightChild->parent == nullptr || exRightChild->parent == this->nil) {
+        this->root = exRightChild;
+    } else if(node == node->parent->left) {
+        node->parent->left = exRightChild;
+    } else {
+        node->parent->right = exRightChild;
+    }
+    exRightChild->left = node;
+    node->parent = exRightChild;
+}
+
+template<class T>
+void RedBlackTree<T>::rightRotate(Node<T> *node) {
+    if(node == nullptr || node == this->nil) {
+        return;
+    }
+    Node<T> *exLeftChild = node->left;
+    if(exLeftChild == nullptr || exLeftChild == this->nil) {
+        return;
+    }
+    node->left = exLeftChild->left;
+    if(node->left != nullptr && node->left != this->nil) {
+        node->left->parent = node;
+    }
+    exLeftChild->parent = node->parent;
+    if(exLeftChild->parent == nullptr || exLeftChild->parent == this->nil) {
+        this->root = exLeftChild;
+    } else if(node == node->parent->right) {
+        node->parent->right = exLeftChild;
+    } else {
+        node->parent->left = exLeftChild;
+    }
+    exLeftChild->right = node;
+    node->parent = exLeftChild;
 }
 
 #endif //ADS_REDBLACKTREE_H
