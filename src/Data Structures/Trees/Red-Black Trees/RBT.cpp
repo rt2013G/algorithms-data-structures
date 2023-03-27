@@ -1,12 +1,15 @@
-#include "iostream"
 #include "RedBlackTree.h"
 
 int main()
 {
     RedBlackTree<int> RBT;
-    for(int i = 0; i < 20; i++) {
-        RBT.treeInsert(i);
-    }
+    RBT.treeInsert(7);
+    RBT.treeInsert(3);
+    RBT.treeInsert(2);
+    RBT.treeInsert(5);
+    RBT.treeInsert(8);
+    RBT.treeInsert(6);
+    RBT.treeDelete(6);
     RBT.printAsciiTree(RBT.root, "", false);
     return 0;
 }

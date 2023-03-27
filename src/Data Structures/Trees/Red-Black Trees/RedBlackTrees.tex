@@ -11,6 +11,7 @@
 \usepackage{titling}
 \usepackage{textcomp}
 \usepackage{natbib}
+\usepackage{xcolor}
 % Document
 \title{\vspace{-1.0cm} Red-Black Trees}
 \date{}
@@ -88,6 +89,45 @@ are \textit{(2)} and \textit{(4)}.
 \end{enumerate}
     Insertion in a RBT has a time complexity of $O(\log(n))$. \newline
     The basic inserting operation takes $O(\log(n))$, we then perform $\log(n)$ recolors and rotations,
-    which take $O(1)$ time. \newline
+    which take $O(1)$ time. \newline \newline \newline
+\textbf{Deletions} \newline \newline
+Just like insertions, deletions in a RBT may lead to a violation of the Red-Black properties. \newline
+To delete a node \textit{Z}, we first delete it like we would in a normal BST, with a slightly different
+    \textit{transplant} procedure and by keeping track of a node \textit{Y} that may violate the properties, then
+    call an additional procedure \textit{deleteFixup} which recolors nodes and performs rotations. \newline
+If \textit{Z}'s original color was red, then red-black properties still hold:
+    \begin{enumerate}
+        \item No black-heights have changed.
+        \item No red nodes have been made adjacent, because \textit{Y} takes \textit{Z}'s place and its color.
+        \item Since \textit{Y} could not have been the root, the root remains black.
+    \end{enumerate}
+If \textit{Z}'s original color was black, then removing or moving \textit{Y} may violate the Red-Black properties,
+    as any path containing \textit{Y} may have a \textit{"missing black"}. \newline
+    Therefore, we add an \textit{"extra black"} to \textit{X} and try to move it up the tree until either
+    \textit{X} is both red and black - at which point we simply color it black - or \textit{X} is the root, at which
+    point we can remove the extra black. \newline
+    We have to handle 4 cases (and their symmetrical variants), depending on the node \textit{X}
+    and its sibling \textit{W}:
+    \begin{enumerate}
+        \item If \textit{W} is red, both of \textit{W}'s children are black, we swap the colors of \textit{W} and
+        and \textit{X}'s parent, and perform a rotation on \textit{X}'s parent on the same side of \textit{X}. \newline
+        \textit{X}'s sibling \textit{W} is now black, therefore, we have moved to one of the other 3 cases.
+        \item If \textit{W} is black and both of its children are black, we change \textit{W}'s color to red and repeat
+        the loop on \textit{X}'s parent.
+        \item If \textit{W} is black and its right child is black (and \textit{W}'s left child is red),
+        we recolor \textit{W} and \textit{W}'s left child, and then perform a right rotation on \textit{W}.
+        \textit{X}'s new sibling is black with a red child, therefore, we are now in the \textit{4th} case.
+        \item If \textit{W} is black and its right child is red, we transfer to \textit{W} the color of its parent and
+        then change the color of \textit{W}'s parent and \textit{W}'s right child to black. \newline
+        We then perform a left rotation on \textit{X}'s parent and set \textit{X} as the root
+        (causing the loop to terminate).
+    \end{enumerate}
+    The time complexity of the delete operation is $O(\log(n))$ without the \textit{deleteFixup} procedure, because
+    the height of a tree of $n$ nodes is at most $\log(n)$. \newline
+    Within the \textit{deleteFixup} procedure, \textit{case 1, 3 and 4} only perform a constant number of color changes
+    and rotations. \newline
+    \textit{Case 2} is the only case in which the while loop can be repeated, and then the pointer \textit{X} moves up
+    the three at most $\log(n)$ times. \newline
+    Therefore, the overall time complexity of the delete operation is $O(\log(n))$.
 
 \end{document}

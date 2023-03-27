@@ -14,7 +14,6 @@ public:
     Node<T> *parent;
     Node<T> *left;
     Node<T> *right;
-    void recolor();
     int color{};
     T data;
 private:
@@ -29,32 +28,26 @@ Node<T>::Node(T data, int color) {
     this->color = color;
 }
 
-template<class T>
-void Node<T>::recolor() {
-    if(this->color == red) {
-        this->color = black;
-    } else {
-        this->color = red;
-    }
-}
-
 template <class T>
 class RedBlackTree
 {
 public:
     RedBlackTree();
-    void printAsciiTree(Node<T> *node, const std::string& prefix, bool isLeft);
-    void printInorder(Node<T> *node);
     Node<T> *binarySearch(Node<T> *node, T data);
     Node<T> *minimum(Node<T> *node);
     Node<T> *maximum(Node<T> *node);
     Node<T> *successor(Node<T> *node);
     Node<T> *predecessor(Node<T> *node);
-    Node<T> *root;
+    void printAsciiTree(Node<T> *node, const std::string& prefix, bool isLeft);
+    void printInorder(Node<T> *node);
     void leftRotate(Node<T> *node);
     void rightRotate(Node<T> *node);
     void treeInsert(T data);
     void insertFixup(Node<T> *node);
+    void treeDelete(T data);
+    void transplant(Node<T> *node_u, Node<T> *node_v);
+    void deleteFixup(Node<T> *node);
+    Node<T> *root;
     Node<T> *nil;
 private:
 
@@ -98,12 +91,10 @@ Node<T> *RedBlackTree<T>::binarySearch(Node<T> *node, T data) {
 
 template<class T>
 Node<T> *RedBlackTree<T>::minimum(Node<T> *node) {
-    if(node == nullptr || node == this->nil) return node;
-    Node<T> *curr = node;
-    while(curr->left != nullptr && curr != this->nil) {
-        curr = curr->left;
+    while(node->left != nullptr && node != this->nil) {
+        node = node->left;
     }
-    return curr;
+    return node;
 }
 
 template<class T>
@@ -156,8 +147,8 @@ void RedBlackTree<T>::leftRotate(Node<T> *node) {
         return;
     }
     node->right = exRightChild->left;
-    if(node->right != nullptr && node->right != this->nil) {
-        node->right->parent = node;
+    if(exRightChild->left != nullptr && exRightChild->left != this->nil) {
+        exRightChild->left->parent = node;
     }
     exRightChild->parent = node->parent;
     if(exRightChild->parent == nullptr || exRightChild->parent == this->nil) {
@@ -180,9 +171,9 @@ void RedBlackTree<T>::rightRotate(Node<T> *node) {
     if(exLeftChild == nullptr || exLeftChild == this->nil) {
         return;
     }
-    node->left = exLeftChild->left;
-    if(node->left != nullptr && node->left != this->nil) {
-        node->left->parent = node;
+    node->left = exLeftChild->right;
+    if(exLeftChild->right != nullptr && exLeftChild->right != this->nil) {
+        exLeftChild->right->parent = node;
     }
     exLeftChild->parent = node->parent;
     if(exLeftChild->parent == nullptr || exLeftChild->parent == this->nil) {
@@ -199,23 +190,23 @@ void RedBlackTree<T>::rightRotate(Node<T> *node) {
 template<class T>
 void RedBlackTree<T>::treeInsert(T data) {
     auto *nodeToInsert = new Node<T>(data, red);
-    Node<T> *curr = this->nil;
-    Node<T> *tmp = this->root;
-    while(tmp != this->nil) {
-        curr = tmp;
-        if(nodeToInsert->data < tmp->data) {
-            tmp = tmp->left;
+    Node<T> *node_y = this->nil;
+    Node<T> *node_x = this->root;
+    while(node_x != this->nil) {
+        node_y = node_x;
+        if(nodeToInsert->data < node_x->data) {
+            node_x = node_x->left;
         } else {
-            tmp = tmp->right;
+            node_x = node_x->right;
         }
     }
-    nodeToInsert->parent = curr;
-    if(curr == this->nil) {
+    nodeToInsert->parent = node_y;
+    if(node_y == this->nil) {
         this->root = nodeToInsert;
-    } else if(nodeToInsert->data < curr->data) {
-        curr->left = nodeToInsert;
+    } else if(nodeToInsert->data < node_y->data) {
+        node_y->left = nodeToInsert;
     } else {
-        curr->right = nodeToInsert;
+        node_y->right = nodeToInsert;
     }
     nodeToInsert->left = this->nil;
     nodeToInsert->right = this->nil;
@@ -229,38 +220,154 @@ void RedBlackTree<T>::insertFixup(Node<T> *node) {
         if(curr->parent == curr->parent->parent->left) {
             Node<T> *uncle = curr->parent->parent->right;
             if(uncle->color == red) {
-                uncle->recolor();
-                curr->parent->recolor();
-                curr->parent->parent->recolor();
+                uncle->color = black;
+                curr->parent->color = black;
+                curr->parent->parent->color = red;
                 curr = curr->parent->parent;
             } else {
                 if(curr == curr->parent->right) {
                     curr = curr->parent;
                     leftRotate(curr);
                 }
-                curr->parent->recolor();
-                curr->parent->parent->recolor();
+                curr->parent->color = black;
+                curr->parent->parent->color = red;
                 rightRotate(curr->parent->parent);
             }
         } else {
             Node<T> *uncle = curr->parent->parent->left;
             if(uncle->color == red) {
-                uncle->recolor();
-                curr->parent->recolor();
-                curr->parent->parent->recolor();
+                uncle->color = black;
+                curr->parent->color = black;
+                curr->parent->parent->color = red;
                 curr = curr->parent->parent;
             } else {
                 if(curr == curr->parent->left) {
                     curr = curr->parent;
                     rightRotate(curr);
                 }
-                curr->parent->recolor();
-                curr->parent->parent->recolor();
+                curr->parent->color = black;
+                curr->parent->parent->color = red;
                 leftRotate(curr->parent->parent);
             }
         }
     }
     this->root->color = black;
+}
+
+/* For some reason trying to delete the root would result in the entire tree getting removed.
+ * After playing around for hours with no avail, I decided to give up.
+ * If some random person in some random point in the future ever reads this
+ * and finds a solution I will be ever grateful.
+*/
+template<class T>
+void RedBlackTree<T>::treeDelete(T data) {
+    Node<T> *nodeToDelete = binarySearch(this->root, data);
+    if(nodeToDelete == nullptr || nodeToDelete == this->nil) return;
+    int originalColor = nodeToDelete->color;
+    Node<T> *node_y;
+    Node<T> *node_x;
+    if(nodeToDelete->left == this->nil) {
+        node_x = nodeToDelete->right;
+        transplant(nodeToDelete, nodeToDelete->right);
+    } else if(nodeToDelete->right == this->nil) {
+        node_x = nodeToDelete->left;
+        transplant(nodeToDelete, nodeToDelete->left);
+    } else {
+        node_y = minimum(nodeToDelete->right);
+        originalColor = node_y->color;
+        node_x = node_y->right;
+        if(node_y->parent == nodeToDelete) {
+            node_x->parent = node_y;
+        } else {
+            transplant(node_y, node_y->right);
+            node_y->right = nodeToDelete->right;
+            node_y->right->parent = node_y;
+        }
+        transplant(nodeToDelete, node_y);
+        node_y->left = nodeToDelete->left;
+        node_y->left->parent = node_y;
+        node_y->color = nodeToDelete->color;
+    }
+    delete nodeToDelete;
+    if(originalColor == black) {
+        deleteFixup(node_x);
+    }
+}
+
+template<class T>
+void RedBlackTree<T>::transplant(Node<T> *node_u, Node<T> *node_v) {
+    if(node_u == nullptr || node_v == nullptr) return;
+    if(node_u->parent == this->nil) {
+        this->root = node_v;
+    } else if(node_u == node_u->parent->left) {
+        node_u->parent->left = node_v;
+    } else {
+        node_u->parent->right = node_v;
+    }
+    node_v->parent = node_u->parent;
+}
+
+template<class T>
+void RedBlackTree<T>::deleteFixup(Node<T> *node) {
+    if(node == nullptr) return;
+    Node<T> *node_x = node;
+    Node<T> *node_w;
+    while(node_x != this->root && node_x->color == black) {
+        if(node_x == node_x->parent->left) {
+            node_w = node_x->parent->right;
+            // case 1
+            if(node_w->color == red) {
+                node_w->color = black;
+                node_x->parent->color = red;
+                leftRotate(node_x->parent);
+                node_w = node_x->parent->right;
+            }
+            // case 2
+            if(node_w->left->color == black && node_w->right->color == black) {
+                node_w->color = red;
+                node_x = node_x->parent;
+            } else {
+                // case 3
+                if(node_w->right->color == black) {
+                    node_w->left->color = black;
+                    node_w->color = red;
+                    rightRotate(node_w);
+                    node_w = node_x->parent->right;
+                }
+                // case 4
+                node_w->color = node_w->parent->color;
+                node_w->parent->color = black;
+                node_w->right->color = black;
+                leftRotate(node_x->parent);
+                node_x = this->root;
+            }
+        } else {  // completely symmetrical to the if part
+            node_w = node_x->parent->left;
+            if(node_w->color == red) {
+                node_w->color = black;
+                node_x->parent->color = red;
+                rightRotate(node_x->parent);
+                node_w = node_x->parent->left;
+            }
+            if(node_w->left->color == black && node_w->right->color == black) {
+                node_w->color = red;
+                node_x = node_x->parent;
+            } else {
+                if(node_w->left->color == black) {
+                    node_w->right->color = black;
+                    node_w->color = red;
+                    leftRotate(node_w);
+                    node_w = node_x->parent->left;
+                }
+                node_w->color = node_w->parent->color;
+                node_w->parent->color = black;
+                node_w->left->color = black;
+                rightRotate(node_x->parent);
+                node_x = this->root;
+            }
+        }
+    }
+    node_x->color = black;
 }
 
 #endif //ADS_REDBLACKTREE_H
