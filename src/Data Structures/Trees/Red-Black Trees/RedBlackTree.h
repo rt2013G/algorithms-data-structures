@@ -14,6 +14,7 @@ public:
     Node<T> *parent;
     Node<T> *left;
     Node<T> *right;
+    void recolor();
     int color{};
     T data;
 private:
@@ -26,6 +27,15 @@ Node<T>::Node(T data, int color) {
     this->right = nullptr;
     this->data = data;
     this->color = color;
+}
+
+template<class T>
+void Node<T>::recolor() {
+    if(this->color == red) {
+        this->color = black;
+    } else {
+        this->color = red;
+    }
 }
 
 template <class T>
@@ -43,15 +53,17 @@ public:
     Node<T> *root;
     void leftRotate(Node<T> *node);
     void rightRotate(Node<T> *node);
-private:
+    void treeInsert(T data);
+    void insertFixup(Node<T> *node);
     Node<T> *nil;
+private:
 
 };
 
 template<class T>
 RedBlackTree<T>::RedBlackTree() {
-    this->root = nullptr;
-    this->nil = new Node<int>(0, black);
+    this->nil = new Node<T>(0, black);
+    this->root = this->nil;
 }
 
 template<class T>
@@ -61,7 +73,7 @@ void RedBlackTree<T>::printAsciiTree(Node<T> *node, const std::string &prefix, b
     }
     cout << prefix;
     cout << (isLeft ? "|--" : "L--");
-    cout << node->data << std::endl;
+    cout << node->data << (node->color ? " black " : " red ") << std::endl;
     printAsciiTree(node->left, prefix + (isLeft ? "|  " : "    "), true);
     printAsciiTree(node->right, prefix + (isLeft ? "|   " : "    "), false);
 }
@@ -182,6 +194,73 @@ void RedBlackTree<T>::rightRotate(Node<T> *node) {
     }
     exLeftChild->right = node;
     node->parent = exLeftChild;
+}
+
+template<class T>
+void RedBlackTree<T>::treeInsert(T data) {
+    auto *nodeToInsert = new Node<T>(data, red);
+    Node<T> *curr = this->nil;
+    Node<T> *tmp = this->root;
+    while(tmp != this->nil) {
+        curr = tmp;
+        if(nodeToInsert->data < tmp->data) {
+            tmp = tmp->left;
+        } else {
+            tmp = tmp->right;
+        }
+    }
+    nodeToInsert->parent = curr;
+    if(curr == this->nil) {
+        this->root = nodeToInsert;
+    } else if(nodeToInsert->data < curr->data) {
+        curr->left = nodeToInsert;
+    } else {
+        curr->right = nodeToInsert;
+    }
+    nodeToInsert->left = this->nil;
+    nodeToInsert->right = this->nil;
+    insertFixup(nodeToInsert);
+ }
+
+template<class T>
+void RedBlackTree<T>::insertFixup(Node<T> *node) {
+    Node<T> *curr = node;
+    while(curr->parent->color == red) {
+        if(curr->parent == curr->parent->parent->left) {
+            Node<T> *uncle = curr->parent->parent->right;
+            if(uncle->color == red) {
+                uncle->recolor();
+                curr->parent->recolor();
+                curr->parent->parent->recolor();
+                curr = curr->parent->parent;
+            } else {
+                if(curr == curr->parent->right) {
+                    curr = curr->parent;
+                    leftRotate(curr);
+                }
+                curr->parent->recolor();
+                curr->parent->parent->recolor();
+                rightRotate(curr->parent->parent);
+            }
+        } else {
+            Node<T> *uncle = curr->parent->parent->left;
+            if(uncle->color == red) {
+                uncle->recolor();
+                curr->parent->recolor();
+                curr->parent->parent->recolor();
+                curr = curr->parent->parent;
+            } else {
+                if(curr == curr->parent->left) {
+                    curr = curr->parent;
+                    rightRotate(curr);
+                }
+                curr->parent->recolor();
+                curr->parent->parent->recolor();
+                leftRotate(curr->parent->parent);
+            }
+        }
+    }
+    this->root->color = black;
 }
 
 #endif //ADS_REDBLACKTREE_H

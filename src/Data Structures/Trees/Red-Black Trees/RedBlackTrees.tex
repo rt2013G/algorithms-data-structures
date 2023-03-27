@@ -50,7 +50,7 @@ According to property \textit{(4)}, at least half of the nodes from the root dow
 therefore, the b-height of the root must be at least $2^{\frac{h}{2}} - 1$: \newline
 $n \geq 2^{\frac{h}{2}} - 1$ \newline \newline
 $n + 1 \geq 2^{\frac{h}{2}}$ \newline \newline
-$log_2(n + 1) \geq \frac{h}{2})$ \newline \newline
+$log_2(n + 1) \geq \frac{h}{2}$ \newline \newline
 \textbf{$h \leq 2 log_2(n + 1)$} \newline \newline \newline
 Insertion and Deletion in a RBT may lead to violations of the Red-Black properties. \newline
 In order to restore such properties, we need to
@@ -64,6 +64,30 @@ In the left rotation of a Node \textit{x}, we assume its right child \textit{y} 
     becomes \textit{y}'s left child, and \textit{y}'s left child becomes \textit{x}'s right child. \newline
     The \textit{right rotation} is completely symmetric. \newline
 Rotations run in $O(1)$ time, because only pointers are changed by them while other attributes in a node
-    remain the same. \newline
+    remain the same. \newline \newline \newline
+\textbf{Insertions} \newline \newline
+We can insert a node in a RBT in $O(\log(n))$ time.
+To do so, we first insert the new node \textit{Z} in the RBT as if it were a normal BST, we then color \textit{Z} red.
+Since this insertion may violate the \textit{Red-Black properties} we call an auxiliary procedure \textit{insertFixup}
+to recolor nodes and performs rotations. \newline
+There are four cases to consider: since we added a \textit{red} node, the only properties that the insertion may violate
+are \textit{(2)} and \textit{(4)}.
+\begin{enumerate}
+    \item If the tree violates property \textit{(2)}, then \textit{Z} is the root, which is the only internal
+    node of the tree.
+    Since its parent and children are sentinels, property \textit{(4)} cannot be violated, therefore, we simply recolor
+    \textit{Z} as black.
+    \item If the \textit{Z}'s uncle is red, then the tree violates property \textit{(4)}, therefore, we recolor
+    \textit{Z}'s uncle, parent and grandparent.
+    \item If \textit{Z}'s uncle is black, and either \textit{Z}'s parent is a right child and \textit{Z} is a left child
+    OR \textit{Z}'s parent is a left child and \textit{Z} is a right child, we rotate \textit{Z}'s parent in
+    the opposite direction of \textit{Z}.
+    \item If \textit{Z}'s uncle is black, and both \textit{Z}'s parent and \textit{Z} are right children OR
+    both \textit{Z}'s parent and \textit{Z} are left children, we rotate \textit{Z}'s grandparent in the opposite
+    direction of \textit{Z}, we then recolor the original parent and grandparent of \textit{Z}.
+\end{enumerate}
+    Insertion in a RBT has a time complexity of $O(\log(n))$. \newline
+    The basic inserting operation takes $O(\log(n))$, we then perform $\log(n)$ recolors and rotations,
+    which take $O(1)$ time. \newline
 
 \end{document}
