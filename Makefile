@@ -1,4 +1,4 @@
-insertion-sort:
-	@python python/sorting/insertion_sort.py
-merge-sort:
-	@python python/sorting/merge_sort.py
+build:
+	@g++ -O3 src/*.cpp -o bin/out
+run: build
+	@./bin/out
