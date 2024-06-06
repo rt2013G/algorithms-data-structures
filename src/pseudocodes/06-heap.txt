@@ -1,0 +1,54 @@
+MAX_HEAPIFY(A, i)
+    L = LEFT(i)
+    R = RIGHT(i)
+    LARGEST = i
+    IF L <= A.HEAP_SIZE AND A[L] > A[LARGEST]
+        LARGEST = L
+    IF R <= A.HEAP_SIZE AND A[R] > A[LARGEST]
+        LARGEST = R
+    IF LARGEST != i
+        SWAP(A[i], A[LARGEST])
+        MAX_HEAPIFY(A, LARGEST)
+
+
+BUILD_MAX_HEAP(A, n)
+    A.HEAP_SIZE = n
+    FOR i = n/2 DOWNTO 1
+        MAX_HEAPIFY(A, i)
+
+
+HEAPSORT(A, n)
+    BUILD_MAX_HEAP(A, n)
+    FOR i = n DOWNTO 2
+        SWAP(A[1], A[i])
+        A.HEAP_SIZE--
+        MAX_HEAPIFY(A, 1)
+
+MAX(A)
+    IF A.HEAP_SIZE >= 1
+        RETURN A[1]
+
+EXTRACT_MAX(A)
+    max = MAX(A)
+    A[1] = A[A.HEAP_SIZE]
+    A.HEAP_SIZE--
+    MAX_HEAPIFY(A, 1)
+    RETURN max
+
+INCREASE_KEY(A, x, k)
+    i = x.KEY
+    IF k < i
+        RETURN // can't decrease key here
+    x.KEY = k
+    WHILE i > 1 AND A[PARENT(i)].KEY < A[i].KEY
+        SWAP(A[i], A[PARENT(i)])
+        i = PARENT(i)
+
+INSERT(A, x, n)
+    IF A.HEAP_SIZE == n
+        RETURN // array is full
+    A.HEAP_SIZE++
+    k = x.KEY
+    x.KEY = -INF
+    A[A.HEAP_SIZE] = x
+    INCREASE_KEY(A, x, k)
