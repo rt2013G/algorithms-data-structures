@@ -1,0 +1,16 @@
+QUICKSORT(A, left, right)
+    IF left < right
+        q = PARTITION(A, left, right)
+        QUICKSORT(A, left, q - 1)
+        QUICKSORT(A, q + 1, right)
+
+
+PARTITION(A, left, right)
+    pivot = A[right]
+    i = left - 1
+    FOR j = left TO right-1
+        IF A[j] <= pivot
+            i++
+            SWAP(A[i], A[j])
+    SWAP(A[i + 1], A[right])
+    RETURN i+1
